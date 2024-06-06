@@ -1,4 +1,4 @@
-import argparse
+import os
 import requests
 import subprocess
 
@@ -57,17 +57,18 @@ class ApiClient:
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument('project')
-    parser.add_argument('awardee')
-    parser.add_argument('pmi_account')
-    parser.add_argument('service_account')
-    parser.add_argument('key_file', type=str, help='Path to the key file')
+    project = os.getenv('PROJECT')
+    awardee = os.getenv('AWARDEE')
+    pmi_account = os.getenv('PMI_ACCOUNT')
+    service_account = os.getenv('SERVICE_ACCOUNT')
+    key_file = os.getenv('KEY_FILE')
 
-    args = parser.parse_args()
+    if not all([project, awardee, pmi_account, service_account, key_file]):
+        raise EnvironmentError(
+            "All environment variables (PROJECT, AWARDEE, PMI_ACCOUNT, SERVICE_ACCOUNT, KEY_FILE) must be set.")
 
-    client = ApiClient(args.project, args.awardee, args.pmi_account,
-                       args.service_account, args.key_file)
+    client = ApiClient(project, awardee, pmi_account,
+                       service_account, key_file)
     client.get_ip()
     client.authenticate()
     client.get_api_version()
