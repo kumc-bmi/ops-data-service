@@ -1,5 +1,6 @@
 import os
 import requests
+import pandas as pd
 import subprocess
 
 
@@ -11,6 +12,7 @@ class ApiClient:
         self.service_account = service_account
         self.key_file = key_file
         self.token = None
+        self.ps_data = None
 
     def get_ip(self):
         ipv6 = subprocess.run(
@@ -54,10 +56,19 @@ class ApiClient:
         else:
             ps_data = resp.json()
             print(f'Success: retrieved {len(ps_data["entry"])} records.')
-            return ps_data
+            self.ps_data = ps_data
+
+    def convert_to_csv(self):
+
+        structured_ps_data = []
+        for i in range(len(self.ps_data['entry'])):
+            structured_ps_data.append(self.ps_data['entry'][i]['resource'])
+
+        df = pd.DataFrame.from_dict(structured_ps_data)
+        df.to_csv('ps_data.csv', index=False)
 
 
-if __name__ == "__main__":
+def main():
     project = os.getenv('PROJECT')
     awardee = os.getenv('AWARDEE')
     pmi_account = os.getenv('PMI_ACCOUNT')
@@ -73,4 +84,9 @@ if __name__ == "__main__":
     client.get_ip()
     client.authenticate()
     client.get_api_version()
-    ps_data = client.get_participant_summary()
+    client.get_participant_summary()
+    client.convert_to_csv()
+
+
+if __name__ == "__main__":
+    main()

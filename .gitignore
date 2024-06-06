@@ -4,3 +4,4 @@ scripts/*
 pyvenv.cfg
 gcloud_key.json
 *.pyc
+*.csv
