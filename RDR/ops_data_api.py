@@ -54,6 +54,7 @@ class ApiClient:
         else:
             ps_data = resp.json()
             print(f'Success: retrieved {len(ps_data["entry"])} records.')
+            return ps_data
 
 
 if __name__ == "__main__":
@@ -72,4 +73,4 @@ if __name__ == "__main__":
     client.get_ip()
     client.authenticate()
     client.get_api_version()
-    client.get_participant_summary()
+    ps_data = client.get_participant_summary()
