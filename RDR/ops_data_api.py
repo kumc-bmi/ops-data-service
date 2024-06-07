@@ -42,7 +42,7 @@ class ApiClient:
 
     def get_api_version(self):
         requests.packages.urllib3.util.connection.HAS_IPV6 = False
-        url = 'http://all-of-us-rdr-stable.appspot.com/rdr/v1/'
+        url = f'http://{self.project}.appspot.com/rdr/v1/'
         resp = requests.get(url, headers=self.get_headers())
         print(resp.json())
 
