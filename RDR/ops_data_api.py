@@ -46,13 +46,13 @@ class ApiClient:
         resp = requests.get(url, headers=self.get_headers())
         print(resp.json())
 
-    def get_participant_summary(self, count=25):
+    # 10000 is max supported by API
+    def get_participant_summary(self, count=10000):
         url = f'https://{self.project}.appspot.com/rdr/v1/ParticipantSummary?_sort=lastModified&_count={count}&awardee={self.awardee}'
         resp = requests.get(url, headers=self.get_headers())
         if not resp or resp.status_code != 200:
-            print(resp.text)
-            print(
-                f'Error: api request failed.\n\n{resp.text if resp else "Unknown error."}')
+            raise Exception(
+                f'Error: api request failed with status code {resp.status_code}.\n\n{resp.text}')
         else:
             ps_data = resp.json()
             print(f'Success: retrieved {len(ps_data["entry"])} records.')
